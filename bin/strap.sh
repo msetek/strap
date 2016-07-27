@@ -55,6 +55,7 @@ STRAP_GITHUB_USER=
 STRAP_GITHUB_TOKEN=
 STRAP_ISSUES_URL='https://github.com/mikemcquaid/strap/issues/new'
 STRAP_USER_REPO="dotfiles"
+STRAP_USER_SETUP_SCRIPT="setup.sh"
 
 STRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 
@@ -265,8 +266,16 @@ fi
 # Install from local Brewfile
 if [ -f "$HOME/.Brewfile" ]; then
   log "Installing from user Brewfile on GitHub:"
-  brew bundle --global
-  logk
+  if brew bundle --global; then
+      logk
+      # run setup script if it's there
+      BOOTSTRAP_SCRIPT="$HOME/.$STRAP_USER_REPO/$STRAP_USER_SETUP_SCRIPT" 
+      if [[ -x $BOOTSTRAP_SCRIPT ]]; then
+          logn "Configuring from user's $STRAP_USER_SETUP_SCRIPT: "
+          "$BOOTSTRAP_SCRIPT"
+          logk
+      fi
+  fi
 fi
 
 STRAP_SUCCESS="1"
