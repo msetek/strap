@@ -53,7 +53,8 @@ STRAP_GIT_NAME=
 STRAP_GIT_EMAIL=
 STRAP_GITHUB_USER=
 STRAP_GITHUB_TOKEN=
-STRAP_ISSUES_URL="https://github.com/mikemcquaid/strap/issues/new"
+STRAP_ISSUES_URL='https://github.com/mikemcquaid/strap/issues/new'
+STRAP_USER_REPO="dotfiles"
 
 STRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 
@@ -244,19 +245,19 @@ else
 fi
 
 if [ -n "$STRAP_GITHUB_USER" ]; then
-  REPO_URL="https://github.com/$STRAP_GITHUB_USER/homebrew-brewfile"
-  REPO_API_URL="https://api.github.com/repos/$STRAP_GITHUB_USER/homebrew-brewfile"
+  REPO_URL="https://github.com/$STRAP_GITHUB_USER/${STRAP_USER_REPO}"
+  REPO_API_URL="https://api.github.com/repos/$STRAP_GITHUB_USER/${STRAP_USER_REPO}"
   STATUS_CODE=$(curl -u "$STRAP_GITHUB_USER:$STRAP_GITHUB_TOKEN" --silent --write-out "%{http_code}" --output /dev/null $REPO_API_URL/contents/Brewfile)
 
   if [ "$STATUS_CODE" -eq 200 ]; then
     logn "Fetching user Brewfile from GitHub:"
-    if [ ! -d "$HOME/.homebrew-brewfile" ]; then
-      git clone $Q $REPO_URL ~/.homebrew-brewfile
+    if [ ! -d "$HOME/.${STRAP_USER_REPO}" ]; then
+      git clone $Q $REPO_URL ~/.${STRAP_USER_REPO}
     else
-      cd ~/.homebrew-brewfile
+      cd ~/.${STRAP_USER_REPO}
       git pull $Q
     fi
-    ln -sf ~/.homebrew-brewfile/Brewfile ~/.Brewfile
+    ln -sf ~/.${STRAP_USER_REPO}/Brewfile ~/.Brewfile
     logk
   fi
 fi
