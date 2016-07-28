@@ -37,6 +37,18 @@ cleanup() {
   fi
 }
 
+prompt_string () {
+    local answer
+
+    builtin read -p "$1: " -r answer
+    if [ ! -z "$answer" ]; then
+        echo $answer
+        return 0
+    else
+        return 1
+    fi
+}
+
 trap "cleanup" EXIT
 
 if [ -n "$STRAP_DEBUG" ]; then
@@ -70,6 +82,10 @@ sw_vers -productVersion | grep $Q -E "^10.(9|10|11|12)" || {
 
 [ "$USER" = "root" ] && abort "Run Strap as yourself, not root."
 groups | grep $Q admin || abort "Add $USER to the admin group."
+
+if [ -z "$STRAP_GIT_NAME" ]; then
+    STRAP_GIT_NAME=$(prompt_string "Please enter your full name (used as your name by git)")
+fi
 
 # Initialise sudo now to save prompting later.
 log "Enter your password (for sudo access):"
