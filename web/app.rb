@@ -14,7 +14,7 @@ STRAP_BEFORE_INSTALL = ENV["STRAP_BEFORE_INSTALL"]
 set :sessions, secret: SESSION_SECRET
 
 use OmniAuth::Builder do
-  provider :github, GITHUB_KEY, GITHUB_SECRET, scope: "user:email,repo"
+  provider :github, GITHUB_KEY, GITHUB_SECRET, scope: "user,repo"
 end
 
 get "/auth/github/callback" do
